@@ -44,23 +44,91 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+ChatBot::ChatBot(const ChatBot &chatBot) //copy constructor (deep copy)
+{
+   _image = new wxBitmap();
+   *_image = *chatBot._image;
 
+   _chatLogic = chatBot._chatLogic;
+
+   _currentNode = new GraphNode(chatBot._currentNode->GetID());
+   _currentNode = chatBot._currentNode;
+
+   _rootNode = new GraphNode(chatBot._rootNode->GetID());
+   _rootNode = chatBot._rootNode;
+   
+   std::cout << "The Copy Constructor" << std::endl;
+}
+
+ChatBot &ChatBot::operator=(const ChatBot &chatBot) // overload assign operator
+{
+    std::cout << "Overload Assign operator" << std::endl;
+    if(this == &chatBot)
+        return *this;
+
+    _image = new wxBitmap();
+    *_image = *chatBot._image;
+
+    _currentNode = chatBot._currentNode;
+
+    _chatLogic = chatBot._chatLogic;
+
+    _rootNode = chatBot._rootNode;
+
+    return *this;
+}
+
+ChatBot::ChatBot(ChatBot &&chatBot) // move constructor
+{
+    std::cout << " The Move Constructor\n";
+    _image = chatBot._image;
+    _currentNode = chatBot._currentNode;
+    _rootNode = chatBot._rootNode;
+    _chatLogic = chatBot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+
+
+    chatBot._currentNode = nullptr; 
+    chatBot._image = NULL;
+    chatBot._rootNode = nullptr; 
+    chatBot._chatLogic = nullptr;
+}
+
+ChatBot &ChatBot::operator=(ChatBot &&chatBot) // move assign operator
+{
+    std::cout << "The Move assign operator\n";
+    if(this == &chatBot)
+        return *this;
+
+    _image = chatBot._image;
+    _currentNode = chatBot._currentNode;
+    _rootNode = chatBot._rootNode;
+    _chatLogic = chatBot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
+
+    chatBot._image = NULL;
+    chatBot._currentNode = nullptr;
+    chatBot._chatLogic = nullptr;
+    chatBot._rootNode = nullptr;
+
+    return *this;
+}
 ////
 //// EOF STUDENT CODE
 
 void ChatBot::ReceiveMessageFromUser(std::string message)
 {
     // loop over all edges and keywords and compute Levenshtein distance to query
-    typedef std::pair<GraphEdge *, int> EdgeDist;
+    typedef std::pair<std::unique_ptr<GraphEdge>, int> EdgeDist;
     std::vector<EdgeDist> levDists; // format is <ptr,levDist>
 
     for (size_t i = 0; i < _currentNode->GetNumberOfChildEdges(); ++i)
     {
-        GraphEdge *edge = _currentNode->GetChildEdgeAtIndex(i);
+        std::unique_ptr<GraphEdge> edge(_currentNode->GetChildEdgeAtIndex(i));
         for (auto keyword : edge->GetKeywords())
         {
-            EdgeDist ed{edge, ComputeLevenshteinDistance(keyword, message)};
-            levDists.push_back(ed);
+            EdgeDist ed{std::move(edge), ComputeLevenshteinDistance(keyword, message)};
+            levDists.push_back(std::move(ed));
         }
     }
 
