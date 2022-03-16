@@ -49,8 +49,8 @@ ChatBot::~ChatBot()
 ChatBot::ChatBot(const ChatBot &chatBot) //copy constructor (deep copy)
 {
    std::cout << "The Copy Constructor" << std::endl;
-   _image = new wxBitmap();
-   *_image = *chatBot._image;
+   //_image = new wxBitmap();
+   _image = chatBot._image;
 
    //_currentNode = new GraphNode(chatBot._currentNode->GetID());
    _currentNode = chatBot._currentNode;
@@ -59,7 +59,7 @@ ChatBot::ChatBot(const ChatBot &chatBot) //copy constructor (deep copy)
    _rootNode = chatBot._rootNode;
 
    _chatLogic = chatBot._chatLogic;
-   _chatLogic->SetChatbotHandle(this);
+   //_chatLogic->SetChatbotHandle(this);
    
 }
 
@@ -69,8 +69,8 @@ ChatBot &ChatBot::operator=(const ChatBot &chatBot) // overload assign operator
     if(this == &chatBot)
         return *this;
 
-    delete _image;
-    _image = new wxBitmap();
+    //delete _image;
+    //_image = new wxBitmap();
     *_image = *chatBot._image;
 
     _currentNode = chatBot._currentNode;
@@ -78,7 +78,7 @@ ChatBot &ChatBot::operator=(const ChatBot &chatBot) // overload assign operator
     _rootNode = chatBot._rootNode;
 
     _chatLogic = chatBot._chatLogic;
-    _chatLogic->SetChatbotHandle(this);
+    //_chatLogic->SetChatbotHandle(this);
 
     return *this;
 }

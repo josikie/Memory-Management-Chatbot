@@ -167,7 +167,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                             //_edges.push_back(edge.get());
 
                             // find all keywords for current node
-                            AddAllTokensToElement("KEYWORD", tokens, *edge);
+                            AddAllTokensToElement("KEYWORD", tokens,*edge);
 
                             // store reference in child node and parent node
                             (*childNode)->AddEdgeToParentNode(edge.get());
@@ -220,8 +220,10 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
     // _chatBot->SetRootNode(rootNode);
     // rootNode->MoveChatbotHere(_chatBot);
 
-    ChatBot chatBot("../images/chatbot.png");
+    ChatBot chatBot = ChatBot("../images/chatbot.png");
+    //_chatBot = &chatBot;
     chatBot.SetChatLogicHandle(this);
+    //SetChatbotHandle(&chatBot);
     chatBot.SetRootNode(rootNode);
     rootNode->MoveChatbotHere(std::move(chatBot));
     ////
