@@ -40,24 +40,27 @@ ChatBot::~ChatBot()
         delete _image;
         _image = NULL;
     }
+
+    std::cout << "end of chatbot destructor\n";
 }
 
 //// STUDENT CODE
 ////
 ChatBot::ChatBot(const ChatBot &chatBot) //copy constructor (deep copy)
 {
+   std::cout << "The Copy Constructor" << std::endl;
    _image = new wxBitmap();
    *_image = *chatBot._image;
 
-   _chatLogic = chatBot._chatLogic;
-
-   _currentNode = new GraphNode(chatBot._currentNode->GetID());
+   //_currentNode = new GraphNode(chatBot._currentNode->GetID());
    _currentNode = chatBot._currentNode;
 
-   _rootNode = new GraphNode(chatBot._rootNode->GetID());
+   //_rootNode = new GraphNode(chatBot._rootNode->GetID());
    _rootNode = chatBot._rootNode;
+
+   _chatLogic = chatBot._chatLogic;
+   _chatLogic->SetChatbotHandle(this);
    
-   std::cout << "The Copy Constructor" << std::endl;
 }
 
 ChatBot &ChatBot::operator=(const ChatBot &chatBot) // overload assign operator
@@ -66,14 +69,16 @@ ChatBot &ChatBot::operator=(const ChatBot &chatBot) // overload assign operator
     if(this == &chatBot)
         return *this;
 
+    delete _image;
     _image = new wxBitmap();
     *_image = *chatBot._image;
 
     _currentNode = chatBot._currentNode;
 
-    _chatLogic = chatBot._chatLogic;
-
     _rootNode = chatBot._rootNode;
+
+    _chatLogic = chatBot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
 
     return *this;
 }
@@ -87,9 +92,8 @@ ChatBot::ChatBot(ChatBot &&chatBot) // move constructor
     _chatLogic = chatBot._chatLogic;
     _chatLogic->SetChatbotHandle(this);
 
-
-    chatBot._currentNode = nullptr; 
     chatBot._image = NULL;
+    chatBot._currentNode = nullptr; 
     chatBot._rootNode = nullptr; 
     chatBot._chatLogic = nullptr;
 }
@@ -108,8 +112,8 @@ ChatBot &ChatBot::operator=(ChatBot &&chatBot) // move assign operator
 
     chatBot._image = NULL;
     chatBot._currentNode = nullptr;
-    chatBot._chatLogic = nullptr;
     chatBot._rootNode = nullptr;
+    chatBot._chatLogic = nullptr;
 
     return *this;
 }
