@@ -134,10 +134,10 @@ ChatBotPanelDialog::~ChatBotPanelDialog()
 {
     //// STUDENT CODE
     ////
-    // std::cout << "In destructor ChatBotPanelDialog\n";
-    // if(_chatLogic != nullptr){
-    //     _chatLogic = nullptr;
-    // }
+    std::cout << "In destructor ChatBotPanelDialog\n";
+    if(_chatLogic != nullptr){
+        _chatLogic = nullptr;
+    }
 
     ////
     //// EOF STUDENT CODE
