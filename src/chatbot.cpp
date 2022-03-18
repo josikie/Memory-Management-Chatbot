@@ -57,6 +57,7 @@ ChatBot::ChatBot(const ChatBot &chatBot) //copy constructor (deep copy)
    _rootNode = chatBot._rootNode;
 
    _chatLogic = chatBot._chatLogic;
+   _chatLogic->SetChatbotHandle(this);
    
 }
 
@@ -74,6 +75,7 @@ ChatBot &ChatBot::operator=(const ChatBot &chatBot) // overload assign operator
     _rootNode = chatBot._rootNode;
 
     _chatLogic = chatBot._chatLogic;
+    _chatLogic->SetChatbotHandle(this);
 
     return *this;
 }
@@ -118,16 +120,16 @@ ChatBot &ChatBot::operator=(ChatBot &&chatBot) // move assign operator
 void ChatBot::ReceiveMessageFromUser(std::string message)
 {
     // loop over all edges and keywords and compute Levenshtein distance to query
-    typedef std::pair<std::unique_ptr<GraphEdge>, int> EdgeDist;
+    typedef std::pair<GraphEdge *, int> EdgeDist;
     std::vector<EdgeDist> levDists; // format is <ptr,levDist>
 
     for (size_t i = 0; i < _currentNode->GetNumberOfChildEdges(); ++i)
     {
-        std::unique_ptr<GraphEdge> edge(_currentNode->GetChildEdgeAtIndex(i));
+        GraphEdge* edge(_currentNode->GetChildEdgeAtIndex(i));
         for (auto keyword : edge->GetKeywords())
         {
-            EdgeDist ed{std::move(edge), ComputeLevenshteinDistance(keyword, message)};
-            levDists.push_back(std::move(ed));
+            EdgeDist ed{edge, ComputeLevenshteinDistance(keyword, message)};
+            levDists.push_back(ed);
         }
     }
 
